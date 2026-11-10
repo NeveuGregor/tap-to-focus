@@ -1,5 +1,7 @@
 # tap-to-focus
 
+*[Français](README.fr.md)*
+
 An Android app that blocks the apps you choose until you scan an NFC tag.
 
 - **Free mode**: nothing is blocked. Scan your tag to start work mode.
