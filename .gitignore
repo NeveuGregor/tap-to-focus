@@ -1,0 +1,16 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.DS_Store
+captures/
+.kotlin/
+# Médias perso (sons, GIF) : jamais publiés, choisis sur le téléphone dans les réglages
+app/src/main/res/raw/
+app/src/main/assets/
+# Secrets
+.env
+.credentials.json
+*.credentials.json
+.claude-accounts/

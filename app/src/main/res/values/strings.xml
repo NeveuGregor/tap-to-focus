@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="description_service">Détecte l\'appli affichée à l\'écran pour bloquer celles que tu as choisies tant que le tag NFC n\'a pas été scanné. Aucune donnée ne quitte le téléphone.</string>
+</resources>
