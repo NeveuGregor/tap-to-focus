@@ -7,9 +7,9 @@ An Android app that blocks the apps you choose until you scan an NFC tag.
 - **Free mode**: nothing is blocked. Scan your tag to start work mode.
 - **Work mode**: the blocked apps show a block screen. Scanning the tag unlocks them for 1, 5, 15 or a custom number of minutes. Settings stay locked until the next scan.
 - **Several tags**: desk, key ring, at a friend's… Any associated tag unlocks.
-- **Your own sounds and image**: choose them in ⚙ → *Sons et image* (a sound on scan, a sound and an image on the block screen). No media is shipped with the app.
+- **Your own sounds and image**: choose them in ⚙ → *Sounds and image* (a sound on scan, a sound and an image on the block screen). No media is shipped with the app.
 
-The UI is in French.
+The UI is in English and French, following the phone's language.
 
 ## Privacy
 

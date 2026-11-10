@@ -9,6 +9,8 @@ Une appli Android qui bloque les applis de ton choix jusqu'à ce que tu scannes 
 - **Plusieurs tags** : bureau, porte-clés, chez un ami… N'importe quel tag associé débloque.
 - **Tes propres sons et image** : à choisir dans ⚙ → *Sons et image* (un son au scan, un son et une image sur l'écran de blocage). Aucun média n'est fourni avec l'appli.
 
+L'interface est en français et en anglais, selon la langue du téléphone.
+
 ## Confidentialité
 
 L'appli n'a pas la permission Internet : rien ne sort du téléphone. Le service d'accessibilité écoute seulement les changements de fenêtre pour savoir quelle appli est au premier plan, et ne lit jamais le contenu de l'écran (`canRetrieveWindowContent="false"`).
