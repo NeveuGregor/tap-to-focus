@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -56,21 +57,6 @@ import kotlinx.coroutines.launch
 const val CONTACT = "contact.neveugregor@proton.me"
 const val DEPOT = "https://github.com/NeveuGregor/tap-to-focus"
 
-private const val TEXTE_CONFIDENTIALITE =
-    "Tap to Focus ne collecte et n'envoie aucune donnée : l'appli n'a pas accès à Internet. " +
-        "Ses réglages (tags, applis bloquées, sons et image choisis) restent sur ce téléphone.\n\n" +
-        "Le service d'accessibilité sert uniquement à savoir quelle appli passe au premier plan, " +
-        "pour afficher l'écran de blocage. Il ne lit pas le contenu des écrans.\n\n" +
-        "Logiciel libre sous licence CeCILL-B, fourni tel quel, sans garantie. " +
-        "Les sons et images que tu ajoutes restent sous ta responsabilité."
-
-private const val TEXTE_CREDITS =
-    "Code : © 2026 Neveu Grégor, licence CeCILL-B.\n\n" +
-        "Polices : IBM Plex Sans (© IBM Corp.) et JetBrains Mono (© JetBrains), " +
-        "SIL Open Font License 1.1.\n\n" +
-        "Icônes : Lucide (lucide.dev), licence ISC.\n\n" +
-        "Sons et images : aucun n'est fourni, ceux que tu choisis restent sur ton téléphone."
-
 /**
  * Écran ouvert par la roue crantée : médias (figés comme les autres réglages en mode travail)
  * et « à propos », toujours lisible.
@@ -79,7 +65,8 @@ private const val TEXTE_CREDITS =
 fun Parametres(prefs: Preferences, verrouille: Boolean, retour: () -> Unit) {
     val context = LocalContext.current
     val portee = rememberCoroutineScope()
-    var texteOuvert by remember { mutableStateOf<Pair<String, String>?>(null) }
+    // Ids de ressources (titre, texte) : le lambda onClick n'est pas composable
+    var texteOuvert by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
     fun enregistrer(cle: Preferences.Key<String>, uri: Uri?) {
         portee.launch {
@@ -103,7 +90,7 @@ fun Parametres(prefs: Preferences, verrouille: Boolean, retour: () -> Unit) {
     val image = selecteur(CLE_IMAGE_BLOCAGE)
 
     @Composable
-    fun LigneMedia(libelle: String, cle: Preferences.Key<String>, vide: String = "Aucun", choisir: () -> Unit) {
+    fun LigneMedia(libelle: String, cle: Preferences.Key<String>, vide: String = stringResource(R.string.none_m), choisir: () -> Unit) {
         val uri = prefs[cle]
         val nom = remember(uri) { uri?.let { nomFichier(context, it) } }
         LigneReglage(libelle, onClick = if (verrouille) null else choisir) {
@@ -116,7 +103,7 @@ fun Parametres(prefs: Preferences, verrouille: Boolean, retour: () -> Unit) {
                 textAlign = TextAlign.End,
                 modifier = Modifier.weight(1f),
             )
-            if (nom != null && !verrouille) TextButton(onClick = { enregistrer(cle, null) }) { Text("Retirer", color = TexteDiscret) }
+            if (nom != null && !verrouille) TextButton(onClick = { enregistrer(cle, null) }) { Text(stringResource(R.string.remove), color = TexteDiscret) }
         }
     }
 
@@ -133,44 +120,44 @@ fun Parametres(prefs: Preferences, verrouille: Boolean, retour: () -> Unit) {
             modifier = Modifier.offset(x = (-12).dp),
         ) {
             IconButton(onClick = retour) {
-                Icon(painterResource(R.drawable.ic_retour), contentDescription = "Retour")
+                Icon(painterResource(R.drawable.ic_retour), contentDescription = stringResource(R.string.back))
             }
-            Text("Réglages", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.settings), style = MaterialTheme.typography.titleLarge)
         }
 
-        Section("Sons et image")
+        Section(stringResource(R.string.sounds_and_image))
         if (verrouille) {
             Text(
-                "Verrouillés jusqu'au prochain scan",
+                stringResource(R.string.locked_until_scan),
                 color = TexteDiscret,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(bottom = 8.dp),
             )
         }
-        LigneMedia("Son au scan", CLE_SON_SCAN) { sonScan.launch(arrayOf("audio/*")) }
-        LigneMedia("Son de blocage", CLE_SON_BLOCAGE) { sonBlocage.launch(arrayOf("audio/*")) }
-        LigneMedia("Image de blocage", CLE_IMAGE_BLOCAGE, "Aucune") { image.launch(arrayOf("image/*")) }
+        LigneMedia(stringResource(R.string.scan_sound), CLE_SON_SCAN) { sonScan.launch(arrayOf("audio/*")) }
+        LigneMedia(stringResource(R.string.block_sound), CLE_SON_BLOCAGE) { sonBlocage.launch(arrayOf("audio/*")) }
+        LigneMedia(stringResource(R.string.block_image), CLE_IMAGE_BLOCAGE, stringResource(R.string.none_f)) { image.launch(arrayOf("image/*")) }
 
-        Section("À propos")
-        LigneReglage("Version") {
+        Section(stringResource(R.string.about))
+        LigneReglage(stringResource(R.string.version)) {
             Text(version(context), fontFamily = Mono, color = TexteSecondaire)
         }
-        LigneReglage("Confidentialité et conditions", onClick = { texteOuvert = "Confidentialité et conditions" to TEXTE_CONFIDENTIALITE }) {}
-        LigneReglage("Contact", onClick = { ouvrir(context, Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$CONTACT"))) }) {
-            Text("Écrire", color = TexteSecondaire, style = MaterialTheme.typography.bodyMedium)
+        LigneReglage(stringResource(R.string.privacy_and_terms), onClick = { texteOuvert = R.string.privacy_and_terms to R.string.privacy_text }) {}
+        LigneReglage(stringResource(R.string.contact), onClick = { ouvrir(context, Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$CONTACT"))) }) {
+            Text(stringResource(R.string.write), color = TexteSecondaire, style = MaterialTheme.typography.bodyMedium)
         }
-        LigneReglage("Code source", onClick = { ouvrir(context, Intent(Intent.ACTION_VIEW, Uri.parse(DEPOT))) }) {
+        LigneReglage(stringResource(R.string.source_code), onClick = { ouvrir(context, Intent(Intent.ACTION_VIEW, Uri.parse(DEPOT))) }) {
             Text("GitHub", color = TexteSecondaire, style = MaterialTheme.typography.bodyMedium)
         }
-        LigneReglage("Crédits et licences", onClick = { texteOuvert = "Crédits et licences" to TEXTE_CREDITS }) {}
+        LigneReglage(stringResource(R.string.credits_and_licences), onClick = { texteOuvert = R.string.credits_and_licences to R.string.credits_text }) {}
     }
 
     texteOuvert?.let { (titre, texte) ->
         AlertDialog(
             onDismissRequest = { texteOuvert = null },
-            title = { Text(titre) },
-            text = { Text(texte, modifier = Modifier.verticalScroll(rememberScrollState())) },
-            confirmButton = { TextButton(onClick = { texteOuvert = null }) { Text("Fermer") } },
+            title = { Text(stringResource(titre)) },
+            text = { Text(stringResource(texte), modifier = Modifier.verticalScroll(rememberScrollState())) },
+            confirmButton = { TextButton(onClick = { texteOuvert = null }) { Text(stringResource(R.string.close)) } },
         )
     }
 }

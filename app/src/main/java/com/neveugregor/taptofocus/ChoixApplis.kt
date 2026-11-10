@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.neveugregor.taptofocus.ui.FormeControle
@@ -101,14 +102,14 @@ fun ChoixApplis(
             modifier = Modifier.offset(x = (-12).dp),
         ) {
             IconButton(onClick = retour) {
-                Icon(painterResource(R.drawable.ic_retour), contentDescription = "Retour")
+                Icon(painterResource(R.drawable.ic_retour), contentDescription = stringResource(R.string.back))
             }
-            Text("Choisir les applis", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.choose_apps), style = MaterialTheme.typography.titleLarge)
         }
         OutlinedTextField(
             value = recherche,
             onValueChange = { recherche = it },
-            placeholder = { Text("Rechercher", color = TexteDiscret) },
+            placeholder = { Text(stringResource(R.string.search), color = TexteDiscret) },
             singleLine = true,
             shape = FormeControle,
             modifier = Modifier.fillMaxWidth(),
@@ -116,19 +117,19 @@ fun ChoixApplis(
 
         val liste = applis
         if (liste == null) {
-            Text("Chargement des applis…", color = TexteSecondaire)
+            Text(stringResource(R.string.loading_apps), color = TexteSecondaire)
         } else {
             val filtrees = liste.filter { it.nom.contains(recherche, ignoreCase = true) }
             // Deux sections : les applis déjà bloquées en haut, les autres en dessous
             val (bloquees, autres) = filtrees.partition { it.packageName in selection }
             LazyColumn {
                 if (bloquees.isNotEmpty()) {
-                    item(key = "entete_bloquees") { Entete("Bloquées", bloquees.size) }
+                    item(key = "entete_bloquees") { Entete(stringResource(R.string.blocked_header), bloquees.size) }
                     items(bloquees, key = { it.packageName }) { appli ->
                         LigneAppli(appli, cochee = true, basculer, Modifier.animateItem())
                     }
                 }
-                item(key = "entete_autres") { Entete("Autres applis", autres.size) }
+                item(key = "entete_autres") { Entete(stringResource(R.string.other_apps), autres.size) }
                 items(autres, key = { it.packageName }) { appli ->
                     LigneAppli(appli, cochee = false, basculer, Modifier.animateItem())
                 }

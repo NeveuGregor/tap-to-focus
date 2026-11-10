@@ -62,6 +62,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -214,19 +216,19 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             if (associationEnCours) {
                 try {
-                    withContext(Dispatchers.IO) { tag.ecrireNdef(packageName) }
+                    withContext(Dispatchers.IO) { tag.ecrireNdef(this@MainActivity) }
                     // Mémorisé seulement si l'écriture a réussi : sinon le tag ne lancerait pas l'appli
                     var ajoute = false
                     reglages.edit { ajoute = ajouterTag(it, uid, System.currentTimeMillis()) }
                     associationEnCours = false
                     if (ajoute) jouer(CLE_SON_SCAN)
-                    message = if (ajoute) "Tag associé." else "Réglages verrouillés : scanne d'abord un de tes tags."
+                    message = getString(if (ajoute) R.string.tag_associated else R.string.settings_locked_scan_first)
                 } catch (e: Exception) {
                     // Tag retiré trop tôt, verrouillé, non NDEF… on reste en association pour réessayer
-                    message = "Écriture impossible (${e.message ?: e.javaClass.simpleName}). Garde le tag contre le téléphone et réessaie."
+                    message = getString(R.string.write_failed, e.message ?: e.javaClass.simpleName)
                 }
             } else {
-                message = scannerTag(uid).texte()
+                message = scannerTag(uid).texte(this@MainActivity)
             }
         }
     }
@@ -239,7 +241,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             var fait = false
             reglages.edit { fait = quitterModeTravail(it, System.currentTimeMillis()) }
-            message = if (fait) "Mode travail désactivé." else null
+            message = if (fait) getString(R.string.work_mode_off) else null
         }
     }
 }
@@ -271,16 +273,16 @@ private fun Accueil(
     var saisieDuree by remember { mutableStateOf(false) }
     val resteMs = if (modeTravail) finDeblocage - maintenant else 0L
     val ouvert = resteMs > 0
-    val applis = if (nbBloquees == 1) "1 appli" else "$nbBloquees applis"
 
     // Ce que dit l'écran : une phrase d'état et une consigne, en mots simples
     val (etat, consigne) = when {
-        tags.isEmpty() -> "Aucun tag associé" to "Associe un tag NFC pour commencer"
-        nbBloquees == 0 -> "Aucune appli choisie" to "Choisis les applis à bloquer"
-        ouvert -> "Ouvert encore ${compteARebours(resteMs)}" to "Ensuite, $applis se rebloquent"
-        modeTravail -> "${applis.replaceFirstChar { it.uppercase() }} bloquée${if (nbBloquees > 1) "s" else ""}" to
-            "Scanne ton tag pour les ouvrir $duree min"
-        else -> "Rien n'est bloqué" to "Scanne ton tag pour bloquer $applis"
+        tags.isEmpty() -> stringResource(R.string.no_tag_associated) to stringResource(R.string.associate_nfc_tag)
+        nbBloquees == 0 -> stringResource(R.string.no_app_chosen) to stringResource(R.string.choose_apps_to_block)
+        ouvert -> stringResource(R.string.unlocked_for_more, compteARebours(resteMs)) to
+            pluralStringResource(R.plurals.then_relock, nbBloquees, nbBloquees)
+        modeTravail -> pluralStringResource(R.plurals.apps_blocked, nbBloquees, nbBloquees) to
+            stringResource(R.string.scan_to_unlock_for_min, duree)
+        else -> stringResource(R.string.nothing_blocked) to pluralStringResource(R.plurals.scan_to_block, nbBloquees, nbBloquees)
     }
 
     // Hauteur mini = l'écran : le tag occupe le haut, les réglages restent sous le pouce
@@ -299,7 +301,7 @@ private fun Accueil(
                     Text(">", color = Accent, style = MaterialTheme.typography.titleMedium)
                     Text("tap-to-focus", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                     IconButton(onClick = ouvrirParametres, modifier = Modifier.offset(x = 12.dp)) {
-                        Icon(painterResource(R.drawable.ic_reglages), contentDescription = "Réglages", tint = TexteSecondaire)
+                        Icon(painterResource(R.drawable.ic_reglages), contentDescription = stringResource(R.string.settings), tint = TexteSecondaire)
                     }
                 }
 
@@ -309,14 +311,13 @@ private fun Accueil(
                         modifier = Modifier.padding(top = 24.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Text("Le blocage est en pause : le service d'accessibilité est désactivé", color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(R.string.blocking_paused), color = MaterialTheme.colorScheme.error)
                         Text(
-                            "Accessibilité → Applications installées → Tap to Focus. " +
-                                "Interrupteur grisé : Infos de l'appli → ⋮ → Autoriser les paramètres restreints.",
+                            stringResource(R.string.accessibility_help),
                             color = TexteSecondaire,
                             style = MaterialTheme.typography.bodyMedium,
                         )
-                        Button(onClick = ouvrirAccessibilite, shape = FormeControle) { Text("Activer le service") }
+                        Button(onClick = ouvrirAccessibilite, shape = FormeControle) { Text(stringResource(R.string.enable_service)) }
                     }
                 }
 
@@ -333,13 +334,13 @@ private fun Accueil(
                     )
                     Text(etat, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
                     when {
-                        !nfcPresent -> Text("Ce téléphone n'a pas de NFC", color = MaterialTheme.colorScheme.error)
+                        !nfcPresent -> Text(stringResource(R.string.no_nfc), color = MaterialTheme.colorScheme.error)
                         !nfcActif -> {
-                            Text("Le NFC est désactivé", color = TexteSecondaire)
-                            Button(onClick = ouvrirReglagesNfc, shape = FormeControle) { Text("Activer le NFC") }
+                            Text(stringResource(R.string.nfc_disabled), color = TexteSecondaire)
+                            Button(onClick = ouvrirReglagesNfc, shape = FormeControle) { Text(stringResource(R.string.enable_nfc)) }
                         }
                         associationEnCours -> Text(
-                            "Approche le tag et garde-le contre le téléphone",
+                            stringResource(R.string.bring_tag_close),
                             color = Accent,
                             textAlign = TextAlign.Center,
                         )
@@ -349,12 +350,12 @@ private fun Accueil(
                     // Le déblocage prouve qu'on a un tag en main : c'est le seul moment où l'on peut sortir
                     if (modeTravail && ouvert) {
                         OutlinedButton(onClick = quitterModeTravail, shape = FormeControle, modifier = Modifier.padding(top = 8.dp)) {
-                            Text("Quitter le mode travail")
+                            Text(stringResource(R.string.exit_work_mode))
                         }
                     }
                     if (tags.isEmpty() && !associationEnCours && nfcActif) {
                         Button(onClick = basculerAssociation, shape = FormeControle, modifier = Modifier.padding(top = 8.dp)) {
-                            Text("Associer un tag")
+                            Text(stringResource(R.string.associate_tag))
                         }
                     }
                 }
@@ -364,25 +365,25 @@ private fun Accueil(
             Column(Modifier.padding(top = 32.dp)) {
                 if (verrouille) {
                     Text(
-                        "Réglages verrouillés jusqu'au prochain scan",
+                        stringResource(R.string.settings_locked_until_scan),
                         color = TexteDiscret,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(bottom = 8.dp),
                     )
                 }
-                LigneReglage("Applis bloquées", onClick = if (verrouille) null else ouvrirChoixApplis) {
+                LigneReglage(stringResource(R.string.blocked_apps), onClick = if (verrouille) null else ouvrirChoixApplis) {
                     Text("$nbBloquees", fontFamily = Mono, color = TexteSecondaire)
                     if (!verrouille) Icon(painterResource(R.drawable.ic_suite), contentDescription = null, tint = TexteDiscret)
                 }
                 // Quatre puces ne tiennent pas à côté du libellé : elles passent dessous
-                LigneReglage("Déblocage") {}
+                LigneReglage(stringResource(R.string.unlock)) {}
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(bottom = 8.dp)) {
                     DUREES_RAPIDES.forEach { minutes ->
                         FilterChip(
                             selected = minutes == duree,
                             onClick = { choisirDuree(minutes) },
                             enabled = !verrouille,
-                            label = { Text("$minutes min") },
+                            label = { Text(stringResource(R.string.minutes_short, minutes)) },
                         )
                     }
                     val libre = duree !in DUREES_RAPIDES
@@ -390,7 +391,7 @@ private fun Accueil(
                         selected = libre,
                         onClick = { saisieDuree = true },
                         enabled = !verrouille,
-                        label = { Text(if (libre) "$duree min" else "Autre") },
+                        label = { Text(if (libre) stringResource(R.string.minutes_short, duree) else stringResource(R.string.custom)) },
                     )
                 }
                 if (saisieDuree && !verrouille) {
@@ -403,12 +404,12 @@ private fun Accueil(
                         annuler = { saisieDuree = false },
                     )
                 }
-                LigneReglage("Tags", onClick = if (nfcActif && !verrouille) basculerAssociation else null) {
+                LigneReglage(stringResource(R.string.tags), onClick = if (nfcActif && !verrouille) basculerAssociation else null) {
                     Text(
                         when {
-                            associationEnCours -> "Annuler"
+                            associationEnCours -> stringResource(R.string.cancel)
                             verrouille -> "${tags.size}"
-                            else -> "Ajouter"
+                            else -> stringResource(R.string.add)
                         },
                         fontFamily = if (verrouille) Mono else null,
                         color = if (associationEnCours) Accent else TexteSecondaire,
@@ -418,7 +419,7 @@ private fun Accueil(
                 // Un tag par ligne ; seul le bouton retire, pour qu'un effleurement de la ligne ne coûte rien
                 tags.sorted().forEach { uid ->
                     LigneReglage(uid, police = Mono) {
-                        if (!verrouille) TextButton(onClick = { retirerTag(uid) }) { Text("Retirer", color = TexteDiscret) }
+                        if (!verrouille) TextButton(onClick = { retirerTag(uid) }) { Text(stringResource(R.string.remove), color = TexteDiscret) }
                     }
                 }
             }
@@ -461,13 +462,13 @@ private fun SaisieDuree(actuelle: Int, valider: (Int) -> Unit, annuler: () -> Un
     val minutes = dureeSaisie(texte)
     AlertDialog(
         onDismissRequest = annuler,
-        title = { Text("Durée du déblocage") },
+        title = { Text(stringResource(R.string.unlock_duration)) },
         text = {
             OutlinedTextField(
                 value = texte,
                 onValueChange = { texte = it.filter(Char::isDigit).take(3) },
-                suffix = { Text("min") },
-                supportingText = { Text("De 1 à $DUREE_MAX min") },
+                suffix = { Text(stringResource(R.string.minutes_unit)) },
+                supportingText = { Text(stringResource(R.string.duration_range, DUREE_MAX)) },
                 isError = minutes == null,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -475,8 +476,8 @@ private fun SaisieDuree(actuelle: Int, valider: (Int) -> Unit, annuler: () -> Un
             )
         },
         confirmButton = {
-            TextButton(onClick = { minutes?.let(valider) }, enabled = minutes != null) { Text("Valider") }
+            TextButton(onClick = { minutes?.let(valider) }, enabled = minutes != null) { Text(stringResource(R.string.confirm)) }
         },
-        dismissButton = { TextButton(onClick = annuler) { Text("Annuler") } },
+        dismissButton = { TextButton(onClick = annuler) { Text(stringResource(R.string.cancel)) } },
     )
 }

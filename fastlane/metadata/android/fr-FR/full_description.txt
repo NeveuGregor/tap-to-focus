@@ -1,0 +1,15 @@
+Tap to Focus bloque les applis de ton choix jusqu'à ce que tu scannes un tag NFC. Laisse le tag sur ton bureau ou sur ton porte-clés : pour ouvrir une appli bloquée, il faut te lever et le scanner.
+
+<b>Fonctionnement</b>
+<ul>
+<li><b>Mode libre</b> : rien n'est bloqué. Scanne ton tag pour passer en mode travail.</li>
+<li><b>Mode travail</b> : les applis bloquées affichent un écran de blocage. Un scan du tag les débloque pour 1, 5 ou 15 minutes, ou une durée libre. Les réglages restent verrouillés jusqu'au scan suivant.</li>
+<li><b>Plusieurs tags</b> : bureau, porte-clés, chez un ami… n'importe quel tag associé débloque.</li>
+<li><b>Tes propres sons et image</b> : un son au scan, un son et une image sur l'écran de blocage. Aucun média n'est fourni avec l'appli.</li>
+</ul>
+
+<b>Confidentialité</b>
+L'appli n'a pas la permission Internet : rien ne sort du téléphone. Le service d'accessibilité sert uniquement à savoir quelle appli est au premier plan, pour afficher l'écran de blocage. Il ne lit jamais le contenu de l'écran.
+
+<b>Prérequis</b>
+Android 10 ou plus récent avec NFC, et un tag NFC capable de stocker des données NDEF (NTAG213/215/216).

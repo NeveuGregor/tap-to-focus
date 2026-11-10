@@ -53,10 +53,10 @@ suspend fun Context.scannerTag(uid: String): ResultatScan {
     return resultat
 }
 
-fun ResultatScan.texte(): String = when (this) {
-    ResultatScan.NonReconnu -> "Tag non reconnu."
-    ResultatScan.ModeTravail -> "Mode travail activé."
-    is ResultatScan.Debloque -> "Débloqué jusqu'à ${heure(fin)}."
+fun ResultatScan.texte(context: Context): String = when (this) {
+    ResultatScan.NonReconnu -> context.getString(R.string.tag_not_recognised)
+    ResultatScan.ModeTravail -> context.getString(R.string.work_mode_on)
+    is ResultatScan.Debloque -> context.getString(R.string.unlocked_until, heure(fin))
 }
 
 /** « 14:05 » dans le fuseau du téléphone. */

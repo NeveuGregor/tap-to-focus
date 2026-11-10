@@ -1,0 +1,1 @@
+Première version : blocage des applis choisies jusqu'au scan d'un tag NFC, plusieurs tags, sons et image personnalisés, anglais et français.

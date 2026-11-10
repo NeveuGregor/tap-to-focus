@@ -13,6 +13,7 @@
 package com.neveugregor.taptofocus
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
@@ -34,21 +35,21 @@ fun Tag.uid(): String = id.joinToString(":") { "%02X".format(it) }
  * cette appli qui s'ouvre, même si une autre déclarait le même type.
  * Bloquant (entrées/sorties NFC) : à appeler hors du thread principal.
  */
-fun Tag.ecrireNdef(packageName: String) {
+fun Tag.ecrireNdef(context: Context) {
     val message = NdefMessage(
         NdefRecord.createMime(TYPE_MIME, "tap-to-focus".toByteArray()),
-        NdefRecord.createApplicationRecord(packageName),
+        NdefRecord.createApplicationRecord(context.packageName),
     )
     val ndef = Ndef.get(this)
     if (ndef != null) {
         ndef.use {
             it.connect()
-            check(it.isWritable) { "tag verrouillé en lecture seule" }
+            check(it.isWritable) { context.getString(R.string.tag_read_only) }
             it.writeNdefMessage(message)
         }
     } else {
         // Tag jamais formaté en NDEF : on le formate en y écrivant le message
-        val formatable = NdefFormatable.get(this) ?: error("tag non compatible NDEF")
+        val formatable = NdefFormatable.get(this) ?: error(context.getString(R.string.tag_not_ndef))
         formatable.use {
             it.connect()
             it.format(message)

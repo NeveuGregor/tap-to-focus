@@ -1,0 +1,15 @@
+Tap to Focus blocks the apps you choose until you scan an NFC tag. Leave the tag on your desk or on your key ring: to open a blocked app, you have to get up and tap it.
+
+<b>How it works</b>
+<ul>
+<li><b>Free mode</b>: nothing is blocked. Scan your tag to start work mode.</li>
+<li><b>Work mode</b>: blocked apps show a block screen. Scanning the tag unlocks them for 1, 5 or 15 minutes, or a custom duration. Settings stay locked until the next scan.</li>
+<li><b>Several tags</b>: desk, key ring, at a friend's… any associated tag unlocks.</li>
+<li><b>Your own sounds and image</b>: pick a sound on scan, and a sound and an image for the block screen. No media is shipped with the app.</li>
+</ul>
+
+<b>Privacy</b>
+The app has no Internet permission: nothing leaves your phone. The accessibility service is only used to know which app is in the foreground, so the block screen can be shown. It never reads screen content.
+
+<b>Requirements</b>
+Android 10 or later with NFC, and an NFC tag that can store NDEF data (NTAG213/215/216).

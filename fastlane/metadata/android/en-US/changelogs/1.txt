@@ -1,0 +1,1 @@
+First release: block chosen apps until an NFC tag is scanned, several tags, custom sounds and image, English and French.

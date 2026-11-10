@@ -1,4 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="description_service">Détecte l\'appli affichée à l\'écran pour bloquer celles que tu as choisies tant que le tag NFC n\'a pas été scanné. Aucune donnée ne quitte le téléphone.</string>
+    <string name="description_service">Detects which app is on screen so it can block the ones you chose until the NFC tag is scanned. No data leaves the phone.</string>
+
+    <!-- MainActivity.kt -->
+    <string name="tag_associated">Tag associated.</string>
+    <string name="settings_locked_scan_first">Settings locked: scan one of your tags first.</string>
+    <string name="write_failed">Couldn\'t write to the tag (%1$s). Hold the tag against the phone and try again.</string>
+    <string name="work_mode_off">Work mode turned off.</string>
+    <string name="no_tag_associated">No tag associated</string>
+    <string name="associate_nfc_tag">Associate an NFC tag to get started</string>
+    <string name="no_app_chosen">No apps chosen</string>
+    <string name="choose_apps_to_block">Choose the apps to block</string>
+    <string name="unlocked_for_more">Unlocked for %1$s more</string>
+    <string name="scan_to_unlock_for_min">Scan your tag to unlock them for %1$d min</string>
+    <string name="nothing_blocked">Nothing is blocked</string>
+    <string name="settings">Settings</string>
+    <string name="blocking_paused">Blocking is paused: the accessibility service is disabled</string>
+    <string name="accessibility_help">Accessibility → Installed apps → Tap to Focus. If the switch is greyed out: App info → ⋮ → Allow restricted settings.</string>
+    <string name="enable_service">Enable service</string>
+    <string name="no_nfc">This phone has no NFC</string>
+    <string name="nfc_disabled">NFC is disabled</string>
+    <string name="enable_nfc">Enable NFC</string>
+    <string name="bring_tag_close">Bring the tag close and hold it against the phone</string>
+    <string name="exit_work_mode">Exit work mode</string>
+    <string name="associate_tag">Associate a tag</string>
+    <string name="settings_locked_until_scan">Settings locked until next scan</string>
+    <string name="blocked_apps">Blocked apps</string>
+    <string name="unlock">Unlock</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="custom">Custom</string>
+    <string name="tags">Tags</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+    <string name="unlock_duration">Unlock duration</string>
+    <string name="minutes_unit">min</string>
+    <string name="duration_range">From 1 to %1$d min</string>
+    <string name="confirm">OK</string>
+
+    <!-- Parametres.kt -->
+    <string name="none_m">None</string>
+    <string name="none_f">None</string>
+    <string name="back">Back</string>
+    <string name="sounds_and_image">Sounds and image</string>
+    <string name="locked_until_scan">Locked until next scan</string>
+    <string name="scan_sound">Scan sound</string>
+    <string name="block_sound">Block sound</string>
+    <string name="block_image">Block image</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    <string name="privacy_and_terms">Privacy and terms</string>
+    <string name="contact">Contact</string>
+    <string name="write">Email</string>
+    <string name="source_code">Source code</string>
+    <string name="credits_and_licences">Credits and licences</string>
+    <string name="close">Close</string>
+    <string name="privacy_text">Tap to Focus doesn\'t collect or send any data: the app has no Internet access. Its settings (tags, blocked apps, chosen sounds and image) stay on this phone.\n\nThe accessibility service is only used to know which app comes to the front, so the block screen can be shown. It doesn\'t read screen content.\n\nFree software under the CeCILL-B licence, provided as is, without warranty. The sounds and images you add are your responsibility.</string>
+    <string name="credits_text">Code: © 2026 Neveu Grégor, CeCILL-B licence.\n\nFonts: IBM Plex Sans (© IBM Corp.) and JetBrains Mono (© JetBrains), SIL Open Font License 1.1.\n\nIcons: Lucide (lucide.dev), ISC licence.\n\nSounds and images: none are provided, the ones you choose stay on your phone.</string>
+
+    <!-- ChoixApplis.kt -->
+    <string name="choose_apps">Choose apps</string>
+    <string name="search">Search</string>
+    <string name="loading_apps">Loading apps…</string>
+    <string name="blocked_header">Blocked</string>
+    <string name="other_apps">Other apps</string>
+
+    <!-- BlockActivity.kt -->
+    <string name="scan_to_unlock">Scan your tag to unlock</string>
+
+    <!-- Scan.kt -->
+    <string name="tag_not_recognised">Tag not recognised.</string>
+    <string name="work_mode_on">Work mode turned on.</string>
+    <string name="unlocked_until">Unlocked until %1$s.</string>
+
+    <!-- TagNfc.kt -->
+    <string name="tag_read_only">tag is locked read-only</string>
+    <string name="tag_not_ndef">tag is not NDEF-compatible</string>
+
+    <!-- Accueil (MainActivity.kt) : pluriels -->
+    <plurals name="apps_blocked">
+        <item quantity="one">%1$d app blocked</item>
+        <item quantity="other">%1$d apps blocked</item>
+    </plurals>
+    <plurals name="then_relock">
+        <item quantity="one">Then %1$d app locks again</item>
+        <item quantity="other">Then %1$d apps lock again</item>
+    </plurals>
+    <plurals name="scan_to_block">
+        <item quantity="one">Scan your tag to block %1$d app</item>
+        <item quantity="other">Scan your tag to block %1$d apps</item>
+    </plurals>
 </resources>

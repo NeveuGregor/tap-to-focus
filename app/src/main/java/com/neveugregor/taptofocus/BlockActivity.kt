@@ -47,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.lifecycleScope
@@ -113,7 +114,7 @@ class BlockActivity : ComponentActivity() {
         lifecycleScope.launch {
             val resultat = scannerTag(tag.uid())
             // Débloqué : on s'efface, l'appli bloquée réapparaît en dessous
-            if (resultat is ResultatScan.Debloque) finish() else message = resultat.texte()
+            if (resultat is ResultatScan.Debloque) finish() else message = resultat.texte(this@BlockActivity)
         }
     }
 
@@ -154,7 +155,7 @@ private fun EcranBlocage(message: String?, image: String?) {
         } else {
             DessinTag(allume = true, absent = false, restant = null, modifier = Modifier.size(232.dp))
         }
-        Text("Scanne ton tag pour débloquer", color = Accent, style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.scan_to_unlock), color = Accent, style = MaterialTheme.typography.titleMedium)
         message?.let { Text(it, color = TexteSecondaire) }
     }
 }
